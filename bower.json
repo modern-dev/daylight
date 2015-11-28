@@ -1,0 +1,23 @@
+{
+  "name": "daylight",
+  "description": "",
+  "main": "index.js",
+  "authors": [
+    "virtyaluk"
+  ],
+  "license": "MIT",
+  "moduleType": [
+    "amd",
+    "es6",
+    "globals",
+    "node"
+  ],
+  "homepage": "https://github.com/virtyaluk/daylight",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
