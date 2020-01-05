@@ -1,12 +1,4 @@
-node_modules/
-.DS_Store
-.travis.yml
-.codeclimate.yml
-.eslintrc
-bower.json
-.jshintrc
+src/
 .idea/
-bower_componenets/
-media/
-docs/
-examples/
+.eslintrc.json
+tsconfig.json

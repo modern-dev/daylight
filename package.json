@@ -1,19 +1,36 @@
 {
-  "name": "daylight",
+  "name": "@modern-dev/daylight",
   "version": "0.1.0",
   "description": "",
-  "main": "index.js",
+  "main": "lib/cjs/index.js",
+  "module": "lib/es6/index.js",
+  "typings": "lib/cjs/index.d.ts",
+  "types": "lib/cjs/index.d.ts",
   "scripts": {
-    "test": "mocha test"
+    "build": "npm run build-cjs && npm run build-es6",
+    "build-cjs": "tsc --module commonjs --outdir ./lib/cjs",
+    "build-es6": "tsc --module es6 --outDir ./lib/es6",
+    "lint": "eslint ./*.ts",
+    "pub": "npm run build && npm publish --access public"
   },
+  "author": "Bohdan Shtepan <bohdan@modern-dev.com>",
+  "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/virtyaluk/daylight.git"
+    "url": "git+https://github.com/modern-dev/daylight.git"
   },
-  "author": "virtyaluk",
-  "license": "MIT",
+  "keywords": [
+    "random",
+    "generator"
+  ],
   "bugs": {
-    "url": "https://github.com/virtyaluk/daylight/issues"
+    "url": "https://github.com/modern-dev/daylight/issues"
   },
-  "homepage": "https://github.com/virtyaluk/daylight#readme"
+  "homepage": "https://github.com/modern-dev/daylight#readme",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^2.8.0",
+    "@typescript-eslint/parser": "^2.8.0",
+    "eslint": "^6.6.0",
+    "typescript": "^3.7.2"
+  }
 }
