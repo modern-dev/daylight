@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "noImplicitAny": true,
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "sourceMap": true,
+    "allowJs": false,
+    "target": "es6",
+    "lib": ["esnext", "dom"],
+    "strictNullChecks": true,
+    "moduleResolution": "node",
+    "declaration": true
+  },
+  "include": ["index.ts"],
+  "exclude": ["node_modules", "./*.spec.ts"]
+}
