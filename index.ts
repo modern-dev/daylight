@@ -6,7 +6,7 @@
  * Licensed under the MIT license.
  */
 
-const { sin, cos, tan, asin, acos, atan2, PI, round } = Math;
+const { sin, cos, tan, asin, acos, atan2, PI, round, floor, sqrt, abs } = Math;
 const rad = PI / 180;
 const e = rad * 23.4397;
 
@@ -19,6 +19,56 @@ const sunDiameter = 0.53 * rad;
 const nauticalTwilightAngle = -6 * rad;
 const astronomicalTwilightAngle = -12 * rad;
 const darknessAngle = -18 * rad;
+const zodiacs: { [key: string]: { sign: string, long: number }} = {
+  zodiac: {
+    sign: 'Aries',
+    long: 0
+  },
+  taurus: {
+    sign: 'Taurus',
+    long: 30
+  },
+  gemini: {
+    sign: 'Gemini',
+    long: 60
+  },
+  cancer: {
+    sign: 'Cancer',
+    long: 90
+  },
+  leo: {
+    sign: 'Leo',
+    long: 120
+  },
+  virgo: {
+    sign: 'Virgo',
+    long: 150
+  },
+  libra: {
+    sign: 'Libra',
+    long: 180
+  },
+  scorpio: {
+    sign: 'Scorpio',
+    long: 210
+  },
+  sagittarius: {
+    sign: 'Sagittarius',
+    long: 240
+  },
+  capricorn: {
+    sign: 'Capricorn',
+    long: 270
+  },
+  aquarius: {
+    sign: 'Aquarius',
+    long: 300
+  },
+  pisces: {
+    sign: 'Pisces',
+    long: 330
+  }
+};
 
 const toJulian = (date: Date): number => date.valueOf() / dayMills - 0.5 + julian1970;
 const getDays = (date: Date): number => toJulian(date) - julian2000;
@@ -80,7 +130,17 @@ function getSunCoords(days: number): SunCoordinates {
   };
 }
 
-function getMoonCoords(days: number): MoonCoordinates {
+function normalize(v: number): number {
+  v = v - floor(v);
+
+  if (v < 0) {
+    v = v + 1;
+  }
+  
+  return v;
+}
+
+function getMoonCoords(date: Date, days: number): MoonCoordinates {
   const eclipticLong = rad * (218.316 + 13.176396 * days);
   const meanAnomaly = rad * (134.963 + 13.064993 * days);
   const meanDistance = rad * (93.272 + 13.229350 * days);
@@ -89,10 +149,44 @@ function getMoonCoords(days: number): MoonCoordinates {
   const lat = rad * 5.128 * sin(meanDistance);
   const distance = 385001 - 20905 * cos(meanAnomaly);
 
+  const year = date.getFullYear();
+  const month = date.getMonth()+1;
+  const day = date.getDate();
+  const yy = year - floor((12 - month) / 10);
+  let mm = month + 9;
+
+  if (mm >= 12) {
+    mm = mm - 12;
+  }
+
+  const k1 = floor(365.25 * (yy + 4712));
+  const k2 = floor(30.6 * mm + 0.5);
+  const k3 = floor(floor((yy / 100) + 49) * 0.75) - 38;
+  let jd = k1 + k2 + day + 59;
+  
+  if (jd > 2299160) {
+    jd = jd - k3;
+  }
+
+  let ip = normalize((jd - 2451550.1) / 29.530588853);
+  ip = ip * 2 * PI;
+  const dp = 2 * PI * normalize((jd - 2451562.2) / 27.55454988);
+  const np = 2 * PI * normalize((jd - 2451565.2) / 27.212220817);
+  const latitude = 5.1 * sin(np);
+  const rp = normalize((jd - 2451555.8) / 27.321582241);
+  const longitude = 360 * rp + 6.3 * sin(dp) + 1.3 * sin(2 * ip - dp) + 0.7 * sin(2 * ip);
+  const zodiacSign = Object.keys(zodiacs)
+    .map(key => zodiacs[key])
+    .filter(zodiac => longitude >= zodiac.long && longitude < zodiac.long + 30)[0]
+    .sign;
+
   return {
     rightAscension: getRightAscension(long, lat),
     declination: getDeclination(long, lat),
-    distance
+    distance,
+    latitude,
+    longitude,
+    zodiacSign
   };
 }
 
@@ -187,6 +281,9 @@ type MoonCoordinates = {
   rightAscension: number;
   declination: number;
   distance: number;
+  latitude: number;
+  longitude: number;
+  zodiacSign: string;
 };
 
 /**
@@ -212,6 +309,21 @@ export type MoonPosition = {
    * Parallactic angle of the moon in radians.
    */
   parallacticAngle: number;
+
+  /**
+   * Moon ecliptic latitude.
+   */
+  latitude: number;
+
+  /**
+   * Moon ecliptic magnitude.
+   */
+  longitude: number;
+
+  /**
+   * Zodica sign the moon in. 
+   */
+  zodiacSign: string;
 };
 
 /**
@@ -368,11 +480,12 @@ function getSunTimes(date: Date, lat: number, lon: number): SunTimes {
  * @return {MoonPosition} - Returns an object containing moon position info.
  */
 function getMoonPosition(date: Date, lat: number, lon: number): MoonPosition {
+  date = date || new Date();
   const lw = rad * -lon;
   const phi = rad * lat;
-  const days = getDays(date || new Date());
+  const days = getDays(date);
 
-  const moonCoords = getMoonCoords(days);
+  const moonCoords = getMoonCoords(date, days);
   const siderealTime = getSiderealTime(days, lw) - moonCoords.rightAscension;
   let altitude = getAltitude(siderealTime, phi, moonCoords.declination);
   const parallacticAngle = atan2(sin(siderealTime), tan(phi) * cos(moonCoords.declination) -
@@ -384,7 +497,10 @@ function getMoonPosition(date: Date, lat: number, lon: number): MoonPosition {
     azimuth,
     altitude,
     distance: moonCoords.distance,
-    parallacticAngle
+    parallacticAngle,
+    latitude: moonCoords.latitude,
+    longitude: moonCoords.longitude,
+    zodiacSign: moonCoords.zodiacSign
   };
 }
 
@@ -395,9 +511,10 @@ function getMoonPosition(date: Date, lat: number, lon: number): MoonPosition {
  * @return {MoonPhase} Returns an object containing moon phase info.
  */
 function getMoonPhase(date: Date): MoonPhase {
+  date = date || new Date();
   const days = getDays(date || new Date());
   const sunCoords = getSunCoords(days);
-  const moonCoords = getMoonCoords(days);
+  const moonCoords = getMoonCoords(date, days);
   const sunDistance = 149598000;
 
   const phi = acos(sin(sunCoords.declination) * sin(moonCoords.declination) + cos(sunCoords.declination) *
@@ -409,7 +526,7 @@ function getMoonPhase(date: Date): MoonPhase {
   
   return {
     fraction: (1 + cos(inc)) / 2,
-    phase: 0.5 + 0.5 * inc * (angle < 0 ? -1 : 1) / Math.PI,
+    phase: 0.5 + 0.5 * inc * (angle < 0 ? -1 : 1) / PI,
     angle: angle
   };
 }
@@ -441,15 +558,15 @@ function getMoonTimes(date: Date, lat: number, lon: number): MoonTimes {
     roots = 0;
 
     if (d >= 0) {
-      dx = Math.sqrt(d) / (Math.abs(a) * 2);
+      dx = sqrt(d) / (abs(a) * 2);
       x1 = xe - dx;
       x2 = xe + dx;
 
-      if (Math.abs(x1) <= 1) {
+      if (abs(x1) <= 1) {
         roots++;
       }
 
-      if (Math.abs(x2) <= 1) {
+      if (abs(x2) <= 1) {
         roots++;
       }
 
@@ -496,7 +613,7 @@ function getMoonTimes(date: Date, lat: number, lon: number): MoonTimes {
 
 const sun = {
   getPosition: getSunPosition,
-  getSunTimes: getSunTimes
+  getTimes: getSunTimes
 };
 const moon = {
   getPosition: getMoonPosition,
