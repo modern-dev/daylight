@@ -19,7 +19,7 @@ describe('daylight', () => {
   let longitude: number;
   
   beforeEach(() => {
-    date = new Date(2019, 1, 9, 20); // 9th of February, 2019
+    date = new Date('2019-02-09T20:00:00.00+02:00'); // 9th of February, 2019
     latitude = 40.74; // New York, Manhattan
     longitude = 74.00;
   });
