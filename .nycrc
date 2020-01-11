@@ -22,10 +22,8 @@
   ],
   "all": true,
   "instrument": true,
-  "watermarks": {
-    "lines": [80, 95],
-    "functions": [80, 95],
-    "branches": [80, 95],
-    "statements": [80, 95]
-  }
+  "lines": 70,
+  "functions": 80,
+  "branches": 30,
+  "statements": 60
 }
