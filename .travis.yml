@@ -5,6 +5,7 @@ os: linux
 install:
 - npm install
 script:
+- npm run build
 - npm run coverage
 - codecov -f coverage/*.json
 deploy:
