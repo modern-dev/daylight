@@ -22,8 +22,8 @@
   ],
   "all": true,
   "instrument": true,
-  "lines": 70,
-  "functions": 80,
-  "branches": 30,
-  "statements": 60
+  "lines": 90,
+  "functions": 90,
+  "branches": 60,
+  "statements": 90
 }
