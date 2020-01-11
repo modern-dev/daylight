@@ -2,5 +2,7 @@ src/
 .idea/
 .eslintrc.json
 tsconfig.json
+.nycrc
+.travis.yml
 coverage/
 .nyc_output/
