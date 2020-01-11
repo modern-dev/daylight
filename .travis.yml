@@ -1,9 +1,17 @@
 language: node_js
 node_js:
-  - 13
+- 13
 os: linux
 install:
-  - npm install
+- npm install
 script:
-  - npm run coverage
-  - codecov -f coverage/*.json
+- npm run coverage
+- codecov -f coverage/*.json
+deploy:
+  provider: npm
+  email: bohdan@modern-dev.com
+  api_key:
+    secure: dy/MdNVSclIMPit23GTwxq0bbYN9cmC0Jh4Y3xAgk6oIUNpCZU0Sv1t433ciy2J2rhjEFZKcgvjTuaCxpKyOKgJ7AdUQUjSTdwL/5uJPXAcslLkYhYxKEv2t4T+mmvfMVblxoaYNyPBRd//PabIdWb7nWTXY6yMORSrIgM9HHJvn2AmYR6Y4jiQp+ZTa5K1p1DJCFgjLCtgq6DzJ126XmjuGmz/yCHsUUj9ZxxbWczx+ltWWStyub4AxmKjpfMvdIvxCKS+tO/NVXkskBEXZiHOSwURXkIZU6mOAHWRGcEcDOMSM9oTWmhCVFDtUBTDNbnWYYVx/lotgznVql1QYkP65WxdiBKfCfTSvlUBBzqGpE5i3sr0or3d1KoTrhNgQZO16byylsHFeX5fXK7xEn5eQ0hBeUJJlrXY5EHWiMq7N6wnb/RQP//fvVoQU+stk37Jz3aYrbsoOGhvc7JHFG+acTXFYhnOVDT9OhxD/GRtPaSumIZoMYUQjZVy3mn+qrhC3Y8iuBETTDQBdxpzz336DRo7IanFVQHaXNWtCCWxBIZz4YKsPSgwnqTI5PMqsgPL4NNW63JPM2sMMRXx1EH5RjszE204lPRXwHP7BNDtQ0oajWKhJvyUm57KUccbVYJV9Xx6ldgB1/p/SXbkqByZ4BCXL+eKQTachDPI8wQo=
+  on:
+    tags: true
+    repo: modern-dev/daylight

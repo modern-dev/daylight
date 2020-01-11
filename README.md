@@ -1,6 +1,8 @@
 Daylight
 ========
 
+[![Build Status](https://travis-ci.org/modern-dev/daylight.svg?branch=master)](https://travis-ci.org/modern-dev/daylight)
+[![codecov](https://codecov.io/gh/modern-dev/daylight/branch/master/graph/badge.svg)](https://codecov.io/gh/modern-dev/daylight)
 ![npm](https://img.shields.io/npm/v/@modern-dev/daylight)
 ![NPM](https://img.shields.io/npm/l/@modern-dev/daylight)
 
