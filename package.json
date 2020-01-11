@@ -14,7 +14,9 @@
     "mocha": "cross-env TS_NODE_FILES=true mocha --exit -r ts-node/register --colors ./*.spec.ts",
     "test": "npm run lint && npm run mocha",
     "pub": "npm run test && npm run build && npm publish --access public",
-    "coverage": "nyc npm run test"
+    "coverage:unit": "nyc npm run test",
+    "coverage:report": "nyc report --reporter=json > coverage/coverage.json",
+    "coverage": "npm run coverage:unit && npm run coverage:report"
   },
   "author": "Bohdan Shtepan <bohdan@modern-dev.com>",
   "license": "MIT",

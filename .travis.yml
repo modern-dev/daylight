@@ -1,8 +1,9 @@
 language: node_js
 node_js:
   - 13
+os: linux
 install:
   - npm install
 script:
-  - npm test
+  - npm run coverage
   - codecov -f coverage/*.json
